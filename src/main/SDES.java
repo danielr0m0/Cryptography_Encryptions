@@ -2,18 +2,32 @@ package main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SDES {
 
     public static void main(String[] args) {
-    byte[] key1 = {1,1,1,0,0,0,1,1,1,0};
+    byte[] key = {1,1,1,0,0,0,1,1,1,0};
     byte[] plainText= {1,0,1,0,1,0,1,0};
-        System.out.println("key");
-        for (int i = 0; i < key1.length; i++) {
-            System.out.print(key1[i] + " ");
-        }
 
-        print(Encrypt(key1, plainText));
+    ArrayList<byte[][]> table= new ArrayList<>();
+        table.add(new byte[][]{{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},null});
+        table.add(new byte[][]{{1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1},null});
+        table.add(new byte[][]{{0,0,0,0,0,1,1,1,1,1},{0,0,0,0,0,0,0,0},null});
+        table.add(new byte[][]{{0,0,0,0,0,1,1,1,1,1},{1,1,1,1,1,1,1,1},null});
+        table.add(new byte[][]{{1,0,0,0,1,0,1,1,1,0},null,{0,0,0,1,1,1,0,0}});
+        table.add(new byte[][]{{1,0,0,0,1,0,1,1,1,0},null,{1,1,0,0,0,0,1,0}});
+        table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,1,1,0,1}});
+        table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,0,0,0,0}});
+
+//        System.out.println("   Key   \t  pText  \t  cText  ");
+//        for (int i = 0; i < table.size(); i++) {
+//            //get row
+//            byte[][] row = table.get(i);
+//
+//            System.out.println("\n");
+//        }
+        print(Encrypt(key, plainText));
 
     }
 
@@ -29,8 +43,10 @@ public class SDES {
 
     public static  byte[] Decrypt(byte[]rawkey, byte[]ciphertext){
         byte[] plaintext = new byte[ciphertext.length];
-
-
+        byte[] ki=circularLeftShift1(p10(rawkey));
+        byte[]k1= p8(ki);
+        byte[]k2= p8(circularLeftShift2(ki));
+        plaintext= IPinverse(fK(swap(fK(IP(plaintext), k2)),k1));
         return plaintext;
     }
 
@@ -190,6 +206,7 @@ public class SDES {
         }
         return lh;
     }
+
     public static byte[] rh(byte[] text){
         byte[] rh = new byte[text.length/2];
         for (int i = 0; i < text.length; i++) {
@@ -198,6 +215,7 @@ public class SDES {
         }
         return rh;
     }
+
     public static byte[]p4(byte[] text){
         byte[] p4 = {2,4,3,1};
         byte[] p4Text = new byte[p4.length];
@@ -216,6 +234,7 @@ public class SDES {
         }
         return n;
     }
+
     public static byte[] intArrToByteArrB2(int[] n){
         String intToByte = "";
         for (int i = 0; i < n.length; i++) {
@@ -230,6 +249,7 @@ public class SDES {
         }
         return results;
     }
+
     public static byte[] swap(byte[] text){
         byte[] swap = new byte[text.length];
         byte[] lh= lh(text);
@@ -239,11 +259,9 @@ public class SDES {
         return swap;
     }
 
-
     public static void print(byte[] b){
-        System.out.println("\n");
         for (int i = 0; i < b.length; i++) {
-            System.out.print(b[i]+" ");
+            System.out.print(b[i]);
         }
     }
 
