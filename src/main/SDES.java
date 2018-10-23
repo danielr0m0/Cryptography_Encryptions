@@ -27,6 +27,7 @@ public class SDES {
 //
 //            System.out.println("\n");
 //        }
+        //try to print
         print(Encrypt(key, plainText));
 
     }
