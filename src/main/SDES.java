@@ -20,15 +20,26 @@ public class SDES {
         table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,1,1,0,1}});
         table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,0,0,0,0}});
 
-//        System.out.println("   Key   \t  pText  \t  cText  ");
-//        for (int i = 0; i < table.size(); i++) {
-//            //get row
-//            byte[][] row = table.get(i);
-//
-//            System.out.println("\n");
-//        }
-        //try to print
-        print(Encrypt(key, plainText));
+        System.out.println("   Key   \t pText  \t cText");
+        for (int i = 0; i < table.size(); i++) {
+            //get row
+            byte[][] row = table.get(i);
+            print(row[0]);
+            System.out.print("\t");
+            if(row[1]==null){
+                print(Decrypt(row[0],row[2]));
+                System.out.print("\t");
+                print(row[2]);
+            }
+            else if(row[2]==null){
+                print(row[1]);
+                System.out.print("\t");
+                print(Encrypt(row[0],row[1]));
+
+
+            }
+            System.out.println("\n");
+        }
 
     }
 
