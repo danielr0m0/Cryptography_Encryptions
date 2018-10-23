@@ -6,13 +6,14 @@ import java.io.IOException;
 public class SDES {
 
     public static void main(String[] args) {
-    byte key1[] = {1,0,1,0,0,0,0,0,1,0};
-
+    byte[] key1 = {1,1,1,0,0,0,1,1,1,0};
+    byte[] plainText= {1,0,1,0,1,0,1,0};
+        System.out.println("key");
         for (int i = 0; i < key1.length; i++) {
             System.out.print(key1[i] + " ");
         }
 
-        Encrypt(key1, key1);
+        print(Encrypt(key1, plainText));
 
     }
 
@@ -21,17 +22,16 @@ public class SDES {
         byte[] ki=circularLeftShift1(p10(rawkey));
         byte[]k1= p8(ki);
         byte[]k2= p8(circularLeftShift2(ki));
-        print(k1);
-        print(k2);
 
-        print(IPinverse(IP(new byte[]{1,2,3,4,5,6,7,8})));
-        return plaintext;
-    }
-    public static  byte[] Decrypt(byte[]rawkey, byte[]ciphertext){
-        byte[] plaintext;
-
-
+        ciphertext=IPinverse(fK(swap(fK(IP(plaintext), k1)),k2));
         return ciphertext;
+    }
+
+    public static  byte[] Decrypt(byte[]rawkey, byte[]ciphertext){
+        byte[] plaintext = new byte[ciphertext.length];
+
+
+        return plaintext;
     }
 
     public static byte[] p10(byte[] rawKey){
@@ -44,16 +44,10 @@ public class SDES {
     }
 
     public static byte[] circularLeftShift1(byte[] key){
-        byte[] lh = new byte[key.length/2];
-        byte[] rh = new byte[key.length/2];
+        byte[] lh = lh(key);
+        byte[] rh = rh(key);
 
-        //fill the data for the right hand and left hand
-        for (int i = 0; i < key.length; i++) {
-            if(i<(key.length/2))
-                lh[i]=key[i];
-            else
-                rh[i%(key.length/2)]=key[i];
-        }
+
         byte lhTemp= lh[0];
         byte rhTemp= rh[0];
         for (int i = 0; i < lh.length; i++) {
@@ -78,16 +72,9 @@ public class SDES {
     }
 
     public static byte[] circularLeftShift2(byte[] key){
-        byte[] lh = new byte[key.length/2];
-        byte[] rh = new byte[key.length/2];
+        byte[] lh = lh(key);
+        byte[] rh = rh(key);
 
-        //fill the data for the right hand and left hand
-        for (int i = 0; i < key.length; i++) {
-            if(i<(key.length/2))
-                lh[i]=key[i];
-            else
-                rh[i%(key.length/2)]=key[i];
-        }
         byte lhTemp1= lh[0];
         byte lhTemp2= lh[1];
 
@@ -148,15 +135,110 @@ public class SDES {
         return IPtext;
     }
 
-    public static byte[] fK(byte[] L, byte[] R){
-
-
-        return R;
+    public static byte[] fK(byte[] text, byte[] SK){
+        byte[] f = F(rh(text),SK);
+        byte[] lh = lh(text);
+        byte[] results = new byte[text.length];
+        for (int i = 0; i < results.length; i++) {
+            if(i<results.length/2)
+                results[i]= (byte) (lh[i] ^ f[i]);
+            else
+                results[i]= text[i];
+        }
+        return results;
     }
 
-    //functions to have
-    //bite to decimal
-    //sbox
+    public static byte[] F(byte[] R, byte[]SK){
+
+        byte[] expansionPermutation= {4,1,2,3,2,3,4,1};
+        byte[] ep= new byte[expansionPermutation.length];
+        for (int i = 0; i < ep.length; i++) {
+            ep[i]= (byte)(R[expansionPermutation[i]-1] ^ SK[i]);
+        }
+        return  p4(sbox(ep));
+    }
+
+    public static byte[] sbox (byte[] text){
+        byte[] lh= lh(text);
+        int s0row= byteArrToInt(new byte[]{lh[0],lh[3]});
+        int s0column= byteArrToInt(new byte[]{lh[1],lh[2]});
+        byte[] results;
+
+        int[][] s0= {{1,0,3,2},
+                     {3,2,1,0},
+                     {0,2,1,3},
+                     {3,2,3,2}};
+
+        byte[] rh= rh(text);
+
+        int s1row= byteArrToInt(new byte[]{rh[0],rh[3]});
+        int s1column= byteArrToInt(new byte[]{rh[1],rh[2]});
+        int[][] s1= {{0,1,2,3},
+                {2,0,1,3},
+                {3,0,1,0},
+                {2,1,0,3}};
+
+        results = intArrToByteArrB2(new int[]{s0[s0row][s0column], s1[s1row][s1column]});
+        return results;
+    }
+
+    public static byte[] lh(byte[] text){
+        byte[] lh = new byte[(text.length/2)];
+        for (int i = 0; i < text.length; i++) {
+            if(i<text.length/2)
+                lh[i]=text[i];
+        }
+        return lh;
+    }
+    public static byte[] rh(byte[] text){
+        byte[] rh = new byte[text.length/2];
+        for (int i = 0; i < text.length; i++) {
+            if(i>=(text.length/2))
+                rh[i%(text.length/2)]=text[i];
+        }
+        return rh;
+    }
+    public static byte[]p4(byte[] text){
+        byte[] p4 = {2,4,3,1};
+        byte[] p4Text = new byte[p4.length];
+        for (int i = 0; i < p4.length; i++) {
+            p4Text[i] = text[p4[i] - 1];
+        }
+        return p4Text;
+    }
+
+    public static int byteArrToInt(byte[] b){
+        int n= 0;
+        for (int i = 0; i < b.length; i++) {
+            if(b[b.length-i-1]==1) {
+                n += Math.pow(2,i);
+            }
+        }
+        return n;
+    }
+    public static byte[] intArrToByteArrB2(int[] n){
+        String intToByte = "";
+        for (int i = 0; i < n.length; i++) {
+            if(Integer.toBinaryString(n[i]).length()<2)
+                intToByte +="0"+Integer.toBinaryString(n[i]);
+            else
+                intToByte +=Integer.toBinaryString(n[i]);
+        }
+        byte[] results = new byte[intToByte.length()];
+        for (int i = 0; i < results.length; i++) {
+            results[i]=(byte)Integer.parseInt(intToByte.charAt(i)+"");
+        }
+        return results;
+    }
+    public static byte[] swap(byte[] text){
+        byte[] swap = new byte[text.length];
+        byte[] lh= lh(text);
+        byte[]rh= rh(text);
+        System.arraycopy(rh,0,swap,0,rh.length);
+        System.arraycopy(lh, 0,swap,rh.length,lh.length);
+        return swap;
+    }
+
 
     public static void print(byte[] b){
         System.out.println("\n");
