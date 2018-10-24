@@ -7,8 +7,6 @@ import java.util.ArrayList;
 public class SDES {
 
     public static void main(String[] args) {
-    byte[] key = {1,1,1,0,0,0,1,1,1,0};
-    byte[] plainText= {1,0,1,0,1,0,1,0};
 
     ArrayList<byte[][]> table= new ArrayList<>();
         table.add(new byte[][]{{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},null});
@@ -21,9 +19,7 @@ public class SDES {
         table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,0,0,0,0}});
 
         System.out.println("   Key   \t pText  \t cText");
-        for (int i = 0; i < table.size(); i++) {
-            //get row
-            byte[][] row = table.get(i);
+        for (byte[][] row: table) {
             print(row[0]);
             System.out.print("\t");
             if(row[1]==null){
@@ -35,8 +31,6 @@ public class SDES {
                 print(row[1]);
                 System.out.print("\t");
                 print(Encrypt(row[0],row[1]));
-
-
             }
             System.out.println("\n");
         }
