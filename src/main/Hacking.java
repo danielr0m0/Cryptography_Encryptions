@@ -39,6 +39,7 @@ public class Hacking {
         System.out.println();
         System.out.println(text2);
         System.out.println(text2.length());
+        int count = 0;
 
         for (int i = 0; i < Math.pow(2, 10); i++) {
             byte[] key1 = byte10BitSize(i);
@@ -52,9 +53,12 @@ public class Hacking {
                 System.out.print(" ");
                 System.out.print(data);
                 System.out.println("\n");
+                count++;
             }
 
         }
+
+        System.out.println(count);
 
         String text3 = "00011111100111111110011111101100111000000011001011110010101010110001011101001101000000110011010111111110000000001010111111000001010010111001111001010101100000110111100011111101011100100100010101000011001100101000000101111011000010011010111100010001001000100001111100100000001000000001101101000000001010111010000001000010011100101111001101111011001001010001100010100000";
         System.out.println(text3);
@@ -66,13 +70,17 @@ public class Hacking {
 //            for (int j = 0; j < Math.pow(2, 10); j++) {
 //                //i for key 1 j for key 2
 //                byte[] key2 = byte10BitSize(j);
-//                print(key1);
-//                System.out.print(" ");
-//                print(key2);
-//                System.out.print(" ");
 //                byte[] decrypt = decrypt(key1,key2,stringToByteArr(text3));
-//                System.out.print(CASCII.toString(decrypt));
-//                System.out.println("\n");
+//                //print stuff
+//                if(decrypt[decrypt.length-1]==(byte)0 &&  decrypt[decrypt.length-2]== (byte) 0 && decrypt[decrypt.length-3]== (byte) 0 ){
+//                    print(key1);
+//                    System.out.print(" ");
+//                    print(key2);
+//                    System.out.print(" ");
+//                    System.out.print(CASCII.toString(decrypt));
+//                    System.out.println("\n");
+//                }
+//
 //            }
 //        }
     }
