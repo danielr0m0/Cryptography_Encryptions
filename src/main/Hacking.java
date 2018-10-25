@@ -15,6 +15,7 @@ public class Hacking {
         //to convert bit[] to a string
         System.out.println("\n"+CASCII.toString(CASCII.Convert(f)));
 
+        //pass the plainText string to CASCII convert class where it converts the plain text to byte [] and add padding to the end to make the length divisible by 8
         print(CASCII.Convert(plainText));
 
         //need to split the converted plaintext into 8 bits and pass them in encrypt
@@ -22,9 +23,11 @@ public class Hacking {
 
         System.out.println("\n"+plainText +" =");
 
+        //encrypt method is this class where it gets the encrypt byte[] and split it into multiple 8 byte[] and passes it to the encryption of SDES and then concat it back to one
         byte[] answer1= encrypt(key,encrypt);
         print(answer1);
 
+        //test if i decrypt the answer i got for encryption will give me back the plain text
         System.out.println();
         System.out.println(CASCII.toString(decrypt(key,answer1)));
 
