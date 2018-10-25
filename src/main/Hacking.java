@@ -35,7 +35,7 @@ public class Hacking {
             byte[] key2 = byte10BitSize(i);
             print(key2);
             System.out.print(" ");
-            byte[] encryption = encrypt(key2,stringToByteArr(text2));
+            byte[] encryption = decrypt(key2,stringToByteArr(text2));
             System.out.print(CASCII.toString(encryption));
             System.out.println();
         }

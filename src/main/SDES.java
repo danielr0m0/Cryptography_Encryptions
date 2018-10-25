@@ -48,11 +48,11 @@ public class SDES {
     }
 
     public static  byte[] Decrypt(byte[]rawkey, byte[]ciphertext){
-        byte[] plaintext = new byte[ciphertext.length];
+        byte[] plaintext;
         byte[] ki=circularLeftShift1(p10(rawkey));
         byte[]k1= p8(ki);
         byte[]k2= p8(circularLeftShift2(ki));
-        plaintext= IPinverse(fK(swap(fK(IP(plaintext), k2)),k1));
+        plaintext= IPinverse(fK(swap(fK(IP(ciphertext), k2)),k1));
         return plaintext;
     }
 
