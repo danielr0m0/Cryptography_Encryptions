@@ -15,7 +15,7 @@ public class TripleSDES {
         table.add(new byte[][]{{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},null,{1,0,0,0,0,0,0,0}});
         table.add(new byte[][]{{1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1},null,{1,0,0,1,0,0,1,0}});
 
-        System.out.println("   Key1   \t    Key   \t pText  \t cText");
+        System.out.println("   Key1   \t    Key2   \t pText  \t cText");
         for (byte[][] row: table) {
             byte[] key1 = row[0];
             byte[] key2 = row[1];
