@@ -2,6 +2,7 @@ package main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Hacking {
 
@@ -23,7 +24,7 @@ public class Hacking {
 
         System.out.println("\n"+plainText +" =");
 
-        //encrypt method is this class where it gets the encrypt byte[] and split it into multiple 8 byte[] and passes it to the encryption of SDES and then concat it back to one
+        //encrypt method is in this class where it gets the encrypt byte[] and split it into byte[] size of 8 and passes it to the encryption of SDES and then concat it back to one
         byte[] answer1= encrypt(key,encrypt);
         print(answer1);
 
@@ -39,17 +40,21 @@ public class Hacking {
 
         for (int i = 0; i < Math.pow(2, 10); i++) {
             byte[] key1 = byte10BitSize(i);
-            print(key1);
-            System.out.print(" ");
             byte[] decrypt = decrypt(key1,stringToByteArr(text2));
-            System.out.print(CASCII.toString(decrypt));
-            System.out.println("\n");
+            String data = CASCII.toString(decrypt);
+
+            //print the stuff
+                print(key1);
+                System.out.print(" ");
+                System.out.print(data);
+                System.out.println("\n");
         }
 
         String text3 = "00011111100111111110011111101100111000000011001011110010101010110001011101001101000000110011010111111110000000001010111111000001010010111001111001010101100000110111100011111101011100100100010101000011001100101000000101111011000010011010111100010001001000100001111100100000001000000001101101000000001010111010000001000010011100101111001101111011001001010001100010100000";
         System.out.println(text3);
         System.out.println(text3.length());
         //for triple SDES need to write to text file since results is too much. since their is 1,048,576 results
+        //or we need some filter to shorten the results we get.
 //        for (int i = 0; i < Math.pow(2, 10); i++) {
 //            byte[] key1 = byte10BitSize(i);
 //            for (int j = 0; j < Math.pow(2, 10); j++) {
