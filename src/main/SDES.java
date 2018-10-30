@@ -18,7 +18,7 @@ public class SDES {
         table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,1,1,0,1}});
         table.add(new byte[][]{{0,0,1,0,0,1,1,1,1,1},null,{1,0,0,1,0,0,0,0}});
 
-        System.out.println("   Key   \t pText  \t cText  \t test");
+        System.out.println("   Key   \t pText  \t cText");
         for (byte[][] row: table) {
             print(row[0]);
             System.out.print("\t");
@@ -27,28 +27,26 @@ public class SDES {
                 print(row[1]);
                 System.out.print("\t");
                 print(row[2]);
-                System.out.print("\t");
-                print(Encrypt(row[0],row[1]));
+
             }
             else if(row[2]==null){
                 print(row[1]);
                 System.out.print("\t");
                 row[2]= Encrypt(row[0],row[1]);
                 print(row[2]);
-                System.out.print("\t");
-                print(Decrypt(row[0],row[2]));
+
             }
             System.out.println("\n");
         }
 
     }
+    //check for the 4th one by hand
 
     public static byte[] Encrypt(byte[] rawkey, byte[] plaintext){
         byte[] ciphertext;
         byte[] ki=circularLeftShift1(p10(rawkey));
         byte[]k1= p8(ki);
-        byte[]k2= p8(circularLeftShift2(ki));
-
+        byte[]k2= p8(circularLeftShift1(circularLeftShift1(ki)));
         ciphertext=IPinverse(fK(swap(fK(IP(plaintext), k1)),k2));
         return ciphertext;
     }
@@ -57,7 +55,8 @@ public class SDES {
         byte[] plaintext;
         byte[] ki=circularLeftShift1(p10(rawkey));
         byte[]k1= p8(ki);
-        byte[]k2= p8(circularLeftShift2(ki));
+        byte[]k2= p8(circularLeftShift1(circularLeftShift1(ki)));
+
         plaintext= IPinverse(fK(swap(fK(IP(ciphertext), k2)),k1));
         return plaintext;
     }
@@ -70,14 +69,49 @@ public class SDES {
         }
         return key;
     }
+    public static byte[] p8(byte[] rawKey){
+        byte[] p8 = {6,3,7,4,8,5,10,9};
+        byte[] key = new byte[p8.length];
+        for (int i = 0; i < p8.length; i++) {
+            key[i] = rawKey[p8[i] - 1];
+        }
+        return key;
+    }
+
+    public static byte[]p4(byte[] text){
+        byte[] p4 = {2,4,3,1};
+        byte[] p4Text = new byte[p4.length];
+        for (int i = 0; i < p4.length; i++) {
+            p4Text[i] = text[p4[i] - 1];
+        }
+        return p4Text;
+    }
+
+    public static byte[] IP(byte[] text){
+        byte[] IP={2,6,3,1,4,8,5,7};
+        byte[] IPtext= new byte[IP.length];
+        for (int i = 0; i < text.length; i++) {
+            IPtext[i]= text[IP[i]-1];
+        }
+        return IPtext;
+    }
+
+    public static byte[] IPinverse(byte[] text){
+        byte[] IPi={4,1,3,5,7,2,8,6};
+        byte[] IPtext= new byte[IPi.length];
+        for (int i = 0; i < text.length; i++) {
+            IPtext[i]= text[IPi[i]-1];
+        }
+        return IPtext;
+    }
 
     public static byte[] circularLeftShift1(byte[] key){
         byte[] lh = lh(key);
         byte[] rh = rh(key);
 
-
         byte lhTemp= lh[0];
         byte rhTemp= rh[0];
+
         for (int i = 0; i < lh.length; i++) {
             if (i == (key.length / 2) - 1) {
                 lh[i] = lhTemp;
@@ -99,69 +133,6 @@ public class SDES {
         return output.toByteArray();
     }
 
-    public static byte[] circularLeftShift2(byte[] key){
-        byte[] lh = lh(key);
-        byte[] rh = rh(key);
-
-        byte lhTemp1= lh[0];
-        byte lhTemp2= lh[1];
-
-        byte rhTemp1= rh[0];
-        byte rhTemp2= rh[1];
-
-        for (int i = 0; i < lh.length; i++) {
-            if(i==(key.length/2)-1){
-                lh[i]=lhTemp2;
-                rh[i]=rhTemp1;
-            }
-            else if(i == (key.length/2)-2){
-                lh[i]=lhTemp1;
-                rh[i]=rhTemp2;
-            }
-            else{
-                lh[i]= lh[i+2];
-                rh[i]= rh[i+2];
-            }
-
-        }
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
-            output.write(lh);
-            output.write(rh);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return output.toByteArray();
-    }
-
-    public static byte[] p8(byte[] rawKey){
-        byte[] p8 = {6,3,7,4,8,5,10,9};
-        byte[] key = new byte[p8.length];
-        for (int i = 0; i < p8.length; i++) {
-            key[i] = rawKey[p8[i] - 1];
-        }
-        return key;
-    }
-
-    public static byte[] IP(byte[] text){
-        byte[] IP={2,6,3,1,4,8,5,7};
-        byte[] IPtext= new byte[IP.length];
-        for (int i = 0; i < text.length; i++) {
-            IPtext[i]= text[IP[i]-1];
-        }
-        return IPtext;
-    }
-
-    public static byte[] IPinverse(byte[] text){
-        byte[] IPi={4,1,3,5,7,2,8,6};
-        byte[] IPtext= new byte[IPi.length];
-        for (int i = 0; i < text.length; i++) {
-            IPtext[i]= text[IPi[i]-1];
-        }
-        return IPtext;
-    }
 
     public static byte[] fK(byte[] text, byte[] SK){
         byte[] f = F(rh(text),SK);
@@ -195,7 +166,7 @@ public class SDES {
         int[][] s0= {{1,0,3,2},
                      {3,2,1,0},
                      {0,2,1,3},
-                     {3,2,3,2}};
+                     {3,1,3,2}};
 
         byte[] rh= rh(text);
 
@@ -226,15 +197,6 @@ public class SDES {
                 rh[i%(text.length/2)]=text[i];
         }
         return rh;
-    }
-
-    public static byte[]p4(byte[] text){
-        byte[] p4 = {2,4,3,1};
-        byte[] p4Text = new byte[p4.length];
-        for (int i = 0; i < p4.length; i++) {
-            p4Text[i] = text[p4[i] - 1];
-        }
-        return p4Text;
     }
 
     public static int byteArrToInt(byte[] b){
