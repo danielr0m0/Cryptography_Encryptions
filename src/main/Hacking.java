@@ -129,23 +129,6 @@ public class Hacking {
         return outputStream.toByteArray();
     }
 
-    public static byte[] encrypt(byte[] key1, byte[] key2, byte[]text){
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        for (int i = 0; i < text.length; i=i+8) {
-            byte [] base8 = new byte[8];
-            for (int j = 0; j < 8; j++) {
-                base8[j]= text[i+j];
-            }
-            try {
-                outputStream.write(TripleSDES.Encrypt(key1,key2,base8));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return outputStream.toByteArray();
-    }
-
     public static byte[] decrypt(byte[] key, byte[]text){
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 

@@ -44,18 +44,18 @@ public class SDES {
 
     public static byte[] Encrypt(byte[] rawkey, byte[] plaintext){
         byte[] ciphertext;
-        byte[] ki=circularLeftShift1(p10(rawkey));
+        byte[] ki= shift(p10(rawkey));
         byte[]k1= p8(ki);
-        byte[]k2= p8(circularLeftShift1(circularLeftShift1(ki)));
+        byte[]k2= p8(shift(shift(ki)));
         ciphertext=IPinverse(fK(swap(fK(IP(plaintext), k1)),k2));
         return ciphertext;
     }
 
     public static  byte[] Decrypt(byte[]rawkey, byte[]ciphertext){
         byte[] plaintext;
-        byte[] ki=circularLeftShift1(p10(rawkey));
+        byte[] ki= shift(p10(rawkey));
         byte[]k1= p8(ki);
-        byte[]k2= p8(circularLeftShift1(circularLeftShift1(ki)));
+        byte[]k2= p8(shift(shift(ki)));
 
         plaintext= IPinverse(fK(swap(fK(IP(ciphertext), k2)),k1));
         return plaintext;
@@ -69,6 +69,7 @@ public class SDES {
         }
         return key;
     }
+
     public static byte[] p8(byte[] rawKey){
         byte[] p8 = {6,3,7,4,8,5,10,9};
         byte[] key = new byte[p8.length];
@@ -105,7 +106,7 @@ public class SDES {
         return IPtext;
     }
 
-    public static byte[] circularLeftShift1(byte[] key){
+    public static byte[] shift(byte[] key){
         byte[] lh = lh(key);
         byte[] rh = rh(key);
 
@@ -133,7 +134,6 @@ public class SDES {
         return output.toByteArray();
     }
 
-
     public static byte[] fK(byte[] text, byte[] SK){
         byte[] f = F(rh(text),SK);
         byte[] lh = lh(text);
@@ -154,10 +154,10 @@ public class SDES {
         for (int i = 0; i < ep.length; i++) {
             ep[i]= (byte)(R[expansionPermutation[i]-1] ^ SK[i]);
         }
-        return  p4(sbox(ep));
+        return  p4(sBox(ep));
     }
 
-    public static byte[] sbox (byte[] text){
+    public static byte[] sBox(byte[] text){
         byte[] lh= lh(text);
         int s0row= byteArrToInt(new byte[]{lh[0],lh[3]});
         int s0column= byteArrToInt(new byte[]{lh[1],lh[2]});
