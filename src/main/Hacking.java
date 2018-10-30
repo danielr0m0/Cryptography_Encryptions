@@ -80,18 +80,18 @@ public class Hacking {
                 int repeatsX= data.length() - data.replace("X","").length();
                 int repeatsZ= data.length() - data.replace("Z","").length();
 
-                int repeatPeriod = data.length()- data.replace(".","").length();
-                int repeatQuestion = data.length()- data.replace("?","").length();
-                int repeatComa = data.length()- data.replace(",","").length();
-                int repeatColen = data.length()- data.replace(":","").length();
-                int repeatSpecial = data.length()- data.replace("'","").length();
-
                 boolean repeats = false;
 
                 //if there is more than one special characters in one word
                 String datas[] = data.split(" ");
                 for (String s: datas) {
-                    if(repeatPeriod+repeatColen+repeatComa+repeatQuestion+repeatSpecial >2){
+                    int repeatPeriod = s.length()- s.replace(".","").length();
+                    int repeatQuestion = s.length()- s.replace("?","").length();
+                    int repeatComa = s.length()- s.replace(",","").length();
+                    int repeatColen = s.length()- s.replace(":","").length();
+                    int repeatSpecial = s.length()- s.replace("'","").length();
+
+                    if(repeatPeriod+repeatColen+repeatComa+repeatQuestion+repeatSpecial >1){
                         repeats= true;
                         break;
                     }
