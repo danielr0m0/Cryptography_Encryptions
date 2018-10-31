@@ -2,7 +2,6 @@ package main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class Hacking {
 
@@ -20,15 +19,10 @@ public class Hacking {
         print(answer1);
 
         System.out.println();
-
         System.out.println("length of answer1: "+ answer1.length);
 
-
         String text2="1011011001111001001011101111110000111110100000000001110111010001111011111101101100010011000000101101011010101000101111100011101011010111100011101001010111101100101110000010010101110001110111011111010101010100001100011000011010101111011111010011110111001001011100101101001000011011111011000010010001011101100011011110000000110010111111010000011100011111111000010111010100001100001010011001010101010000110101101111111010010110001001000001111000000011110000011110110010010101010100001000011010000100011010101100000010111000000010101110100001000111010010010101110111010010111100011111010101111011101111000101001010001101100101100111001110111001100101100011111001100000110100001001100010000100011100000000001001010011101011100101000111011100010001111101011111100000010111110101010000000100110110111111000000111110111010100110000010110000111010001111000101011111101011101101010010100010111100011100000001010101110111111101101100101010011100111011110101011011";
-        System.out.println("to decrypt:");
-        System.out.println(text2);
-
-        int count = 0;
+        System.out.println("to decrypt part 3 question one:");
 
         for (int i = 0; i < Math.pow(2, 10); i++) {
             byte[] key1 = byte10BitSize(i);
@@ -38,9 +32,9 @@ public class Hacking {
             //print the stuff
             //if the last two byte is 0 print since padding for a 952 size is 2
             //more filter remove
-            //if it has more than 3 z
-            //if it has more than 3 x
-            //if it has more than 3 q
+            //if it has more than 2 z
+            //if it has more than 2 x
+            //if it has more than 2 q
             int repeatsQ= data.length() - data.replace("Q","").length();
             int repeatsX= data.length() - data.replace("X","").length();
             int repeatsZ= data.length() - data.replace("Z","").length();
@@ -50,15 +44,11 @@ public class Hacking {
                 System.out.print(" ");
                 System.out.print(data);
                 System.out.println("\n");
-
             }
-
         }
 
-
         String text3 = "00011111100111111110011111101100111000000011001011110010101010110001011101001101000000110011010111111110000000001010111111000001010010111001111001010101100000110111100011111101011100100100010101000011001100101000000101111011000010011010111100010001001000100001111100100000001000000001101101000000001010111010000001000010011100101111001101111011001001010001100010100000";
-        System.out.println(text3);
-        System.out.println(text3.length());
+        System.out.println("\n part 3 question 3 \n");
         //for triple SDES need to write to text file since results is too much. since their is 1,048,576 results
         //or we need some filter to shorten the results we get.
         for (int i = 0; i < Math.pow(2, 10); i++) {
@@ -88,10 +78,10 @@ public class Hacking {
                     int repeatPeriod = s.length()- s.replace(".","").length();
                     int repeatQuestion = s.length()- s.replace("?","").length();
                     int repeatComa = s.length()- s.replace(",","").length();
-                    int repeatColen = s.length()- s.replace(":","").length();
+                    int repeatColon = s.length()- s.replace(":","").length();
                     int repeatSpecial = s.length()- s.replace("'","").length();
 
-                    if(repeatPeriod+repeatColen+repeatComa+repeatQuestion+repeatSpecial >1){
+                    if(repeatPeriod+repeatColon+repeatComa+repeatQuestion+repeatSpecial >1){
                         repeats= true;
                         break;
                     }

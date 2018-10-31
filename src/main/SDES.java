@@ -40,7 +40,6 @@ public class SDES {
         }
 
     }
-    //check for the 4th one by hand
 
     public static byte[] Encrypt(byte[] rawkey, byte[] plaintext){
         byte[] ciphertext;
