@@ -11,7 +11,6 @@ public class Hacking {
 
         //need to split the converted plaintext into 8 bits and pass them in encrypt
         byte[] encrypt = CASCII.Convert(plainText);
-
         System.out.println("\n"+plainText +" encrypted=");
 
         //encrypt method is in this class where it gets the encrypt byte[] and split it into byte[] size of 8 and passes it to the encryption of SDES and then concat it back to one
